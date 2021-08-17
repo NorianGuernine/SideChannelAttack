@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item key="AES_system-bitFile" value="/home/norian/Documents/github/SideChannelAtt/pourgithub/microblaze/AES/AES.runs/impl_1/design_1_wrapper.bit"/>
+	<item key="AES_system-bmmFile" value="/home/norian/Documents/github/SideChannelAtt/pourgithub/microblaze/AES/AES.runs/impl_1/design_1_wrapper.mmi"/>
+	<item key="AES_system-target" value="Local"/>
+	<item key="AES_system-device" value="Auto Detect"/>
+	<item key="AES_system-partial_bit" value="false"/>
+	<item key="AES_system-skip_rev_check" value="false"/>
+	<item key="programfpga.sdxproject" value="AES_GPIO_system"/>
+	<item key="AES_system-microblaze_0-initElf" value="bootloop"/>
+	<item key="devices_info_Local" value="{&quot;cables&quot;:[{&quot;name&quot;:&quot;Digilent Arty A7-35T 210319B0C416A&quot;,&quot;indexContextMap&quot;:{&quot;2&quot;:&quot;jsn-Arty A7-35T-210319B0C416A-0362d093-0&quot;}}]}"/>
+	<item key="AES_GPIO_system-bitFile" value="/home/norian/Documents/github/SideChannelAtt/pourgithub/microblaze/AES/AES.runs/impl_1/design_1_wrapper.bit"/>
+	<item key="AES_GPIO_system-bmmFile" value="/home/norian/Documents/github/SideChannelAtt/pourgithub/microblaze/AES/AES.runs/impl_1/design_1_wrapper.mmi"/>
+	<item key="AES_GPIO_system-target" value="Local"/>
+	<item key="AES_GPIO_system-device" value="Auto Detect"/>
+	<item key="AES_GPIO_system-partial_bit" value="false"/>
+	<item key="AES_GPIO_system-skip_rev_check" value="false"/>
+	<item key="AES_GPIO_system-microblaze_0-initElf" value="bootloop"/>
+</section>

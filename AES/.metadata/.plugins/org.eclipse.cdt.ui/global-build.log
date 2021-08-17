@@ -1,0 +1,5 @@
+Nothing to build in platform 'design_1_wrapper_2'
+
+19:39:29 **** Incremental Build of configuration Debug for project AES_GPIO ****
+make all 
+make: Nothing to be done for 'all'.

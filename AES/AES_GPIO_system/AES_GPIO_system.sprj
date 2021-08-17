@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ASCII"?>
+<systemproject:SystemProject xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sdkproject="http://www.xilinx.com/sdkproject" xmlns:systemproject="http://www.xilinx.com/systemproject" name="AES_GPIO_system" platform="/home/norian/Documents/github/SideChannelAtt/pourgithub/microblaze_GPIO/AES/design_1_wrapper_2/export/design_1_wrapper_2/design_1_wrapper_2.xpfm" platformUID="xilinx:arty-a7-35::0.0(custom)" sysConfig="design_1_wrapper_2" runtime="cpp" rootFSLocation="" linuxImage="" sysroot="">
+  <configuration name="Debug" id="com.xilinx.sdx.system.managedbuilder.debugConfiguration.1987249310">
+    <configBuildOptions xsi:type="systemproject:SystemOptions">
+      <applications name="AES_GPIO" domainName="standalone_microblaze_0" domainPrettyName="standalone_microblaze_0" appBuildConfig="Debug"/>
+      <options xsi:type="sdkproject:SdkOptions" generateSdCard="true"/>
+    </configBuildOptions>
+  </configuration>
+  <configuration name="Release" id="com.xilinx.sdx.system.managedbuilder.releaseConfiguration.1095781577">
+    <configBuildOptions xsi:type="systemproject:SystemOptions">
+      <applications name="AES_GPIO" domainName="standalone_microblaze_0" domainPrettyName="standalone_microblaze_0" appBuildConfig="Release"/>
+      <options xsi:type="sdkproject:SdkOptions" generateSdCard="true"/>
+    </configBuildOptions>
+  </configuration>
+</systemproject:SystemProject>
