@@ -4,21 +4,17 @@ from os import listdir
 import numpy as np
 
 
-N_ENREGISTREMENT=15000
+N_ENREGISTREMENT=20000
 N_ECHANTILLON=3253
 
 bytestart = 0
-byteend = 15
+byteend = 16
 keyhypostart = 0
 keyhypostop = 256
-solvedkey=np.zeros((1,byteend),dtype=float)
 plaintext=np.zeros((200,16),dtype=int)
-plain=[]
-max_courbe=0
-num=0
-ListeDiffGroupe=[]
+diffGroupe=[]
 
-Sbox = (
+Sbox = [
         0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76,
         0xCA, 0x82, 0xC9, 0x7D, 0xFA, 0x59, 0x47, 0xF0, 0xAD, 0xD4, 0xA2, 0xAF, 0x9C, 0xA4, 0x72, 0xC0,
         0xB7, 0xFD, 0x93, 0x26, 0x36, 0x3F, 0xF7, 0xCC, 0x34, 0xA5, 0xE5, 0xF1, 0x71, 0xD8, 0x31, 0x15,
@@ -35,15 +31,11 @@ Sbox = (
         0x70, 0x3E, 0xB5, 0x66, 0x48, 0x03, 0xF6, 0x0E, 0x61, 0x35, 0x57, 0xB9, 0x86, 0xC1, 0x1D, 0x9E,
         0xE1, 0xF8, 0x98, 0x11, 0x69, 0xD9, 0x8E, 0x94, 0x9B, 0x1E, 0x87, 0xE9, 0xCE, 0x55, 0x28, 0xDF,
         0x8C, 0xA1, 0x89, 0x0D, 0xBF, 0xE6, 0x42, 0x68, 0x41, 0x99, 0x2D, 0x0F, 0xB0, 0x54, 0xBB, 0x16
-        )
+        ]
 
 
 traces=listdir("traces//")
 traces=sorted(traces)
-key="0000000000000003243f6a8885a308d3"
-#ciphertext="af6aad170535242f28cb33acfce4e97e"
-ciphertext= [0xaf,0x6a,0xad,0x17,0x05,0x35,0x24,0x2f,0x28,0xcb,0x33,0xac,0xfc,0xe4,0xe9,0x7e]
-#plaintext="1e7964c993d14cbac363a801a2048d4e"
 courbe=np.zeros((N_ENREGISTREMENT,N_ECHANTILLON),dtype='int16')
 
 #Recup msg
@@ -57,67 +49,52 @@ for j in range(0,N_ENREGISTREMENT):
     plaintext[j]=p
     p=[]
 
-#Recup cipher
-cip=np.zeros((20000,32),dtype=int)
-for j in range(0,20000):
-    for i in range(0,len(traces[j])):
-            if traces[j][i] == 'c' and traces[j][i+1] == '=':
-                    for k in range(0,32):
-                            cip[j][k]=(int(traces[j][(i+2)+k],16))
-
+#Recup des courbes
 for i in range(0,N_ENREGISTREMENT):
     n=0
     with open("traces//"+str(traces[i]), newline='') as fichier:
-              data=csv.reader(filter(lambda row: row[0]!='#',fichier), delimiter=' ')
-              for d in data:    #On ne peut pas utiliser de boucle for i in range(x,y) a cause du type de data
-                  courbe[i][n]=int(d[0])
-                  n+=1
-##fig=plt.figure()
-##ax=plt.axes()
-##plt.title("Enregistrement d'un chiffrement AES")
-##ax=ax.set(xlabel='temps(secondes)',ylabel='tension(Volts)')
-##plt.plot(courbe[0])
-##plt.show()
+        data=csv.reader(filter(lambda row: row[0]!='#',fichier), delimiter=' ')
+        for d in data:    #On ne peut pas utiliser de boucle for i in range(x,y) a cause du type de data
+            courbe[i][n]=int(d[0])
+            n+=1
+fig=plt.figure()
+ax=plt.axes()
+plt.title("Enregistrement d'un chiffrement AES")
+ax=ax.set(xlabel='temps(secondes)',ylabel='tension(Volts)')
+plt.plot(courbe[100])
+plt.show()
 #Attaque
-for BYTE in range(0,1):
-    #Matrice d'hypothèse
-    Hypoth=np.zeros((N_ENREGISTREMENT,256),dtype=int)
-    for k in range(0,3):#for k in range(keyhypostart,keyhypostop):
-        groupe1=np.zeros(N_ECHANTILLON,dtype=float)
-        nbtraces1=0
-        nbtraces2=0
-        groupe2=np.zeros(N_ECHANTILLON,dtype=float)
-        diffGroupe=np.zeros(N_ECHANTILLON,dtype=float)
-        groupfin = np.zeros((1,N_ECHANTILLON),dtype=int)
-        moyenGroupe1=np.zeros(N_ECHANTILLON,dtype=float)
-        moyenGroupe2=np.zeros(N_ECHANTILLON,dtype=float)
+for BYTE in range(bytestart,byteend):
+    diffGroupe=[]
+    for k in range(keyhypostart,keyhypostop):
+        groupe1=[]
+        groupe2=[]
         for n in range(0,N_ENREGISTREMENT):
-            Hypoth[n,k]=plaintext[n,BYTE]^k
-            test = Hypoth[n,k]
-            Hypoth[n,k]=Sbox[test]
-            firstbit=Hypoth[n,k] & 0x01
-            if firstbit == 1:
-                for i in range(0,N_ECHANTILLON):
-                    groupe1[i]=groupe1[i]+courbe[n][i]
-                nbtraces1 +=1
+#Fonction de selection
+            Hypo = plaintext[n,BYTE]^k
+            Hypo = Sbox[Hypo]
+            firstbit = Hypo & 0x01
+            if firstbit ==1:
+                groupe1.append(courbe[n])
             else:
-                for i in range(0,N_ECHANTILLON):
-                    groupe2[i]=groupe2[i]+courbe[n][i]
-                nbtraces2 +=1
+                groupe2.append(courbe[n])
+#Calcul de la moyenne
+        array_groupe1 = np.array(groupe1)
+        array_groupe2 = np.array(groupe2)
+        moygroupe1 = np.mean(array_groupe1, axis=0, dtype=np.float64)
+        moygroupe2 = np.mean(array_groupe2, axis=0, dtype=np.float64)
+#difference des moyennes
+        diffGroupe.append(np.subtract(abs(moygroupe1),abs(moygroupe2)))
 
-        for i in range(0,N_ECHANTILLON):
-            moyenGroupe1[i]=groupe1[i]/nbtraces1
-            moyenGroupe2[i]=groupe2[i]/nbtraces2
-            diffGroupe[i] = abs(moyenGroupe1[i]-moyenGroupe2[i])
-        ListeDiffGroupe.append(diffGroupe)
-        print("cle n° "+str(k))
-    print("Byte n° "+str(BYTE))
+#Recuperation du max le plus grand afin de détecter la bonne guess
+    maxi = 0
+    numListe = 0
+    num = 0
+    for Liste in diffGroupe:
+        if max(Liste) > maxi:
+            maxi = max(Liste)
+            numListe = num
+        num += 1
+    print("valeur de l'octet de la clé = " + str(numListe))
     
-maxi = 0
-numListe = 0
-for Liste in ListeDiffGroupe:
-    if max(Liste) > maxi:
-	    maxi = max(Liste)
-	    numListe = num
-    num += 1
-print(numListe)
+
