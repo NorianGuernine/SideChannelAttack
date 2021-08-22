@@ -67,3 +67,37 @@ class SideChannelAttack():
                     numListe = num
                 num += 1
             self.key.append(numListe)
+    def CPA(self):
+        HW = [bin(n).count("1") for n in range(0,256)]
+        for BYTE in range(self.bytestart,self.byteend):
+            cpaoutput = [0]*256
+            maxcpa = [0]*256
+            for k in range(self.keyhypostart,self.keyhypostop):
+                #Init
+                sumnum = np.zeros(self.N_ECHANTILLON)
+                sumden1 = np.zeros(self.N_ECHANTILLON)
+                sumden2 = np.zeros(self.N_ECHANTILLON)
+                Hypo = np.zeros(self.N_ENREGISTREMENT)
+                for tnum in range(0,self.N_ENREGISTREMENT):
+                    Hypo[tnum] = HW[self.Sbox[self.plaintext[tnum][BYTE]^k]]
+                    
+                #Calcul de la moyenne des hypotheses
+                meanh = np.mean(Hypo, dtype=np.float64)
+                
+                #Calcul de la moyenne des traces
+                meant = np.mean(self.traces, axis=0, dtype=np.float64)
+
+                for tnum in range(0, self.N_ENREGISTREMENT):
+                    hdiff = (Hypo[tnum] - meanh)
+                    tdiff = self.traces[tnum,:] - meant
+
+                    sumnum = sumnum + (hdiff*tdiff)
+                    sumden1 = sumden1 + hdiff*hdiff 
+                    sumden2 = sumden2 + tdiff*tdiff
+
+                cpaoutput[k] = sumnum / np.sqrt( sumden1 * sumden2 )
+                maxcpa[k] = max(abs(cpaoutput[k]))
+                print(maxcpa)
+            #Recuperation du max le plus grand afin de détecter la bonne guess
+            self.key.append(np.argmax(maxcpa))
+            
