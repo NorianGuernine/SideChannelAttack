@@ -20,7 +20,7 @@ This is what a trace looks like:
 
 ### Launch main.py
 
-Then launch the file main.pyw and click on "ouvrir" in the frame "Enregistrement des traces" and select the traces.
+Then launch the file main.py and click on "ouvrir" in the frame "Enregistrement des traces" and select the traces.
 
 After that click on "ouvrir" in the frame "enregistrement des plaintexts" and select the plaintext file.
 
